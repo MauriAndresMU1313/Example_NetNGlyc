@@ -1,0 +1,45 @@
+use strict;
+use warnings;
+
+my($id,$counter);
+my $treshold = 0.7;
+
+while( <> ) {
+    chomp;
+    next unless $. > 1;
+    my @cols = split("[; ]+", $_);
+    next unless @cols == 7;
+    my($id,$potential) = @cols[1,4];
+    $counter->{$id}++ if $potential >= $treshold;
+}
+
+my @sorted_ids = sort { $a cmp $b } keys %$counter;
+
+for $id (@sorted_ids) {
+    write;
+}
+
+$~ = "STDOUT_BOTTOM";
+write;
+
+exit 0;
+
+format STDOUT_TOP =
+
+Criteria:          potential >= @#.##
+$treshold
+
++-----------------------------+-------+
+| Part                        | Count |
++-----------------------------+-------+
+.
+
+format STDOUT =
+| @<<<<<<<<<<<<<<<<<<<<<<<<<< | @>>>> |
+$id,$counter->{$id}
+.
+
+format STDOUT_BOTTOM =
++-----------------------------+-------+
+
+.
